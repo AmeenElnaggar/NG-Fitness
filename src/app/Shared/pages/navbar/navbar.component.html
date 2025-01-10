@@ -1,0 +1,14 @@
+<mat-sidenav-container>
+  <!-- Sidenav List  -->
+  <mat-sidenav #sidenav role="navigation">
+    <app-sidenav-list (closeSideNav)="sidenav.close()" />
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <!-- Links in The Navbar -->
+    <app-header (sidenavToggle)="sidenav.toggle()" />
+
+    <!-- Content Replaced Based on The Routing  -->
+    <main><ng-content /></main>
+  </mat-sidenav-content>
+</mat-sidenav-container>

@@ -1,0 +1,72 @@
+<section class="signup-form">
+  <form
+    [formGroup]="myForm"
+    fxLayout="column"
+    fxLayoutAlign="center center"
+    fxLayoutGap="10px"
+    (ngSubmit)="onSubmit()"
+  >
+    <!-- Email Input -->
+    <mat-form-field appearance="fill">
+      <mat-label>Your Email</mat-label>
+      @if (!emailIsInvalid) {
+      <mat-error>Please enter a valid email address.</mat-error>
+      } @if (emailIsInvalid) {
+      <mat-error>Field must not be empty.</mat-error>
+      }
+
+      <input
+        [maxLength]="40"
+        matInput
+        type="email"
+        formControlName="email"
+        placeholder="test@example.com"
+      />
+    </mat-form-field>
+
+    <!-- Password Input  -->
+    <mat-form-field appearance="fill">
+      <mat-label>Your Password</mat-label>
+      @if (passwordIsInvalid) {
+      <mat-error>Has to be at least 6 character long. </mat-error>
+      }
+      <mat-hint>Should be at least 6 character long. </mat-hint>
+
+      <input type="password" matInput formControlName="password" />
+    </mat-form-field>
+
+    <!-- BirthDate Input -->
+    <mat-form-field>
+      <mat-label>Your Birthdate</mat-label>
+      <mat-hint>MM/DD/YYYY</mat-hint>
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+
+      <input
+        matInput
+        [matDatepicker]="picker"
+        [max]="maxDate()"
+        formControlName="birthdate"
+      />
+    </mat-form-field>
+
+    <!-- Checkbox Input -->
+    <mat-checkbox formControlName="checkbox" required="agree" color="primary"
+      >Agree to Terms and Conditions</mat-checkbox
+    >
+
+    <!-- Submit Button  -->
+    @if (!isLoading()) {
+    <button
+      type="submit"
+      mat-raised-button
+      color="primary"
+      [disabled]="myForm.invalid"
+    >
+      Submit
+    </button>
+    }@else {
+    <mat-spinner></mat-spinner>
+    }
+  </form>
+</section>

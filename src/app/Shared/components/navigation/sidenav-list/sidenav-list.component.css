@@ -1,0 +1,22 @@
+a {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+a:hover,
+a:active {
+  color: lightgray;
+}
+
+.navLinks {
+  list-style: none;
+}
+
+.navLinks li a {
+  color: white;
+}
+
+.navCaption {
+  display: inline-block;
+  padding-left: 6px;
+}

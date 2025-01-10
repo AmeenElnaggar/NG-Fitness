@@ -1,0 +1,14 @@
+.newTraining {
+  padding: 50px;
+}
+
+mat-card-title {
+  /* background-color: red; */
+  padding: 15px;
+  font-size: 25px;
+}
+
+.cardItem {
+  margin-top: 20px;
+  padding: 10px;
+}

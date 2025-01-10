@@ -1,0 +1,33 @@
+<mat-nav-list>
+  @if (!isAuth) {
+
+  <a (click)="onClose()" mat-list-item [routerLink]="['signup']">
+    <div class="linkItems" fxLayout>
+      <mat-icon>face</mat-icon>
+      <span class="navCaption">Signup</span>
+    </div>
+  </a>
+
+  <a (click)="onClose()" mat-list-item [routerLink]="['login']">
+    <div class="linkItems" fxLayout>
+      <mat-icon>input</mat-icon>
+      <span class="navCaption">Login</span>
+    </div>
+  </a>
+  } @if (isAuth) {
+
+  <a (click)="onClose()" mat-list-item [routerLink]="['training']">
+    <div class="linkItems" fxLayout>
+      <mat-icon>fitness_center</mat-icon>
+      <span class="navCaption">Training</span>
+    </div>
+  </a>
+
+  <a (click)="onLogout()" mat-list-item [routerLink]="'/'">
+    <div class="linkItems" fxLayout>
+      <mat-icon>eject</mat-icon>
+      <span class="navCaption">Logout</span>
+    </div>
+  </a>
+  }
+</mat-nav-list>

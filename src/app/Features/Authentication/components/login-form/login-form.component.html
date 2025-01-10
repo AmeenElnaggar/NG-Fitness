@@ -1,0 +1,52 @@
+<form
+  [formGroup]="myForm"
+  fxLayout="column"
+  fxLayoutAlign="center center"
+  fxLayoutGap="10px"
+  (ngSubmit)="onSubmit()"
+>
+  <!-- Email Input -->
+  <mat-form-field appearance="fill">
+    <mat-label>Your Email</mat-label>
+    <mat-hint>Please enter a valid email.</mat-hint>
+    @if (emailIsInvalid) {
+    <mat-error>Invalid or Missing email.</mat-error>
+    }
+
+    <input
+      type="email"
+      [maxLength]="40"
+      matInput
+      formControlName="email"
+      placeholder="Your Email"
+    />
+  </mat-form-field>
+
+  <!-- Password Input -->
+  <mat-form-field appearance="fill">
+    <mat-label>Your Password</mat-label>
+    <mat-hint>Please enter your password.</mat-hint>
+    <mat-error>Missing password.</mat-error>
+
+    <input
+      type="password"
+      matInput
+      formControlName="password"
+      placeholder="Your Password"
+    />
+  </mat-form-field>
+
+  <!-- Submit Button -->
+  @if (!isLoading()) {
+  <button
+    type="submit"
+    mat-raised-button
+    color="primary"
+    [disabled]="myForm.invalid"
+  >
+    Submit
+  </button>
+  }@else {
+  <mat-spinner></mat-spinner>
+  }
+</form>
