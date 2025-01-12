@@ -2,19 +2,25 @@ import { DatePipe, DecimalPipe } from '@angular/common';
 import {
   AfterViewInit,
   Component,
-  effect,
   inject,
   OnInit,
   signal,
   viewChild,
 } from '@angular/core';
-import { TrainingService } from '../../services/training.service';
+import { FormsModule } from '@angular/forms';
+
+import { MaterialModule } from '../../../../Core/modules/material.module';
+
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
-import { Exercise } from '../../models/exercise.model';
-import { FormsModule } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
-import { MaterialModule } from '../../../../Core/modules/material.module';
+
+import { TrainingService } from '../../services/training.service';
+import { Exercise } from '../../models/exercise.model';
+
+import { Store } from '@ngrx/store';
+import { StoreInterface } from '../../../../Store/store';
+import { finishedTrainingsSelector } from '../../../../Store/selectors/training.selectors';
 
 @Component({
   selector: 'app-past-training',
@@ -24,6 +30,7 @@ import { MaterialModule } from '../../../../Core/modules/material.module';
 })
 export class PastTrainingComponent implements AfterViewInit, OnInit {
   private trainingService = inject(TrainingService);
+  private store = inject(Store<StoreInterface>);
 
   displayedColumns: string[] = [
     'date',
@@ -38,14 +45,11 @@ export class PastTrainingComponent implements AfterViewInit, OnInit {
   paginator = viewChild<MatPaginator>(MatPaginator);
   filterValue = signal<string>('');
 
-  constructor() {
-    effect(() => {
-      this.dataSource.data = this.trainingService.finishedExercisesChanged();
-    });
-  }
-
   ngOnInit(): void {
     this.trainingService.fetchCompletedOrCancelledExercises();
+    this.store.select(finishedTrainingsSelector).subscribe((result) => {
+      this.dataSource.data = result;
+    });
   }
 
   ngAfterViewInit(): void {

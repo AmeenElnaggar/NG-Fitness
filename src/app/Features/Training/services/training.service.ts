@@ -1,12 +1,25 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { Exercise } from '../models/exercise.model';
 import {
   addDoc,
   collection,
   Firestore,
   onSnapshot,
 } from '@angular/fire/firestore';
+
+import { Exercise } from '../models/exercise.model';
 import { UiService } from '../../../Shared/Services/ui.service';
+
+import { Store } from '@ngrx/store';
+import { StoreInterface } from '../../../Store/store';
+import { startLoading, stopLoading } from '../../../Store/actions/ui.actions';
+import {
+  setAvaliableTrainings,
+  setFinishedTrainings,
+  startTraining,
+  stopTraining,
+} from '../../../Store/actions/training.actions';
+import { activeTrainingsSelector } from '../../../Store/selectors/training.selectors';
+import { take } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -15,11 +28,20 @@ export class TrainingService {
   private unSubscribeFromFirestore: (() => void)[] = [];
   private uiService = inject(UiService);
   private db = inject(Firestore);
-  private avaliableExercises = signal<Exercise[]>([]);
+  private store = inject(Store<StoreInterface>);
   exercisesChanged = signal<Exercise[] | null>([]);
 
+  private runningExercise = signal<Exercise | undefined>(undefined);
+  theRunningExercise = this.runningExercise.asReadonly();
+  exerciseChanged = signal<Exercise | undefined>(undefined);
+
+  private finishedexercises = signal<Exercise[]>([]);
+  allFinishedExercises = this.finishedexercises.asReadonly();
+  finishedExercisesChanged = signal<Exercise[]>([]);
+
+  // 1
   fetchAvaliableExercises() {
-    this.uiService.loadingStateChanged.set(true);
+    this.store.dispatch(startLoading());
     const collectionRef = collection(this.db, 'avaliableExercises');
 
     const unsubscribe = onSnapshot(collectionRef, (snapshot) => {
@@ -29,12 +51,11 @@ export class TrainingService {
           return { id: docDataChanged.id, ...docDataChanged.data() };
         }) as Exercise[];
 
-        this.avaliableExercises.set(dataChanges);
-        this.exercisesChanged.set(this.avaliableExercises());
-        this.uiService.loadingStateChanged.set(false);
+        this.store.dispatch(stopLoading());
+        this.store.dispatch(setAvaliableTrainings({ exercises: dataChanges }));
       } catch (error) {
+        this.store.dispatch(stopLoading());
         this.exercisesChanged.set(null);
-        this.uiService.loadingStateChanged.set(false);
         this.uiService.showSnackbar(
           `Fetching exercises failed, please try again later`,
           3000
@@ -45,53 +66,47 @@ export class TrainingService {
     this.unSubscribeFromFirestore.push(unsubscribe);
   }
 
-  //****************************************** */
-  private runningExercise = signal<Exercise | undefined>(undefined);
-  theRunningExercise = this.runningExercise.asReadonly();
-  exerciseChanged = signal<Exercise | undefined>(undefined);
-
-  //****************************************** */
-  private finishedexercises = signal<Exercise[]>([]);
-  allFinishedExercises = this.finishedexercises.asReadonly();
-  finishedExercisesChanged = signal<Exercise[]>([]);
-
   startExercise(selectedId: string) {
-    const selectedExercise = this.avaliableExercises().find(
-      (ex) => ex.id === selectedId
-    );
-    this.runningExercise.set(selectedExercise);
-    this.exerciseChanged.set(selectedExercise);
+    this.store.dispatch(startTraining({ selectedExerciseId: selectedId }));
   }
 
   completeCurrentExercise() {
-    const exercise: Exercise = {
-      ...this.runningExercise()!,
-      date: new Date(),
-      state: 'completed',
-    };
-    this.addDataToDatabase(exercise);
-    this.runningExercise.set(undefined);
-    this.exerciseChanged.set(undefined);
+    this.store
+      .select(activeTrainingsSelector)
+      .pipe(take(1))
+      .subscribe((ex) => {
+        const exercise: Exercise = {
+          ...ex!,
+          date: new Date(),
+          state: 'completed',
+        };
+        this.addDataToDatabase(exercise);
+        this.store.dispatch(stopTraining());
+      });
   }
 
   cancelCurrentExercise(progress: number) {
-    const exercise: Exercise = {
-      ...this.runningExercise()!,
-      calories: this.runningExercise()!.calories * (progress / 100),
-      duration: this.runningExercise()!.duration * (progress / 100),
-      date: new Date(),
-      state: 'cancelled',
-    };
-    this.addDataToDatabase(exercise);
-    this.runningExercise.set(undefined);
-    this.exerciseChanged.set(undefined);
+    this.store
+      .select(activeTrainingsSelector)
+      .pipe(take(1))
+      .subscribe((ex) => {
+        const exercise: Exercise = {
+          ...ex!,
+          calories: ex!.calories * (progress / 100),
+          duration: ex!.duration * (progress / 100),
+          date: new Date(),
+          state: 'cancelled',
+        };
+        this.addDataToDatabase(exercise);
+        this.store.dispatch(stopTraining());
+      });
   }
 
   private addDataToDatabase(exercise: Exercise) {
     const collectionRef = collection(this.db, 'finishedExercises');
     addDoc(collectionRef, exercise);
   }
-
+  // 2
   fetchCompletedOrCancelledExercises() {
     const collectionRef = collection(this.db, 'finishedExercises');
 
@@ -106,9 +121,11 @@ export class TrainingService {
             };
           }
         ) as Exercise[];
-        this.finishedExercisesChanged.set(completeOrCancelledExercise);
+        this.store.dispatch(
+          setFinishedTrainings({ exercises: completeOrCancelledExercise })
+        );
       } catch {
-        this.uiService.loadingStateChanged.set(false);
+        this.store.dispatch(stopLoading());
         this.uiService.showSnackbar(
           `Fetching finished exercises failed, please try again later`,
           3000

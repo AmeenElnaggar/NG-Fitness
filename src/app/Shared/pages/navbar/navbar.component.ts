@@ -1,7 +1,9 @@
-import { Component, OnInit, viewChild } from '@angular/core';
+import { Component } from '@angular/core';
+
+import { MaterialModule } from '../../../Core/modules/material.module';
+
 import { HeaderComponent } from '../../components/navigation/header/header.component';
 import { SidenavListComponent } from '../../components/navigation/sidenav-list/sidenav-list.component';
-import { MaterialModule } from '../../../Core/modules/material.module';
 
 @Component({
   selector: 'app-navbar',

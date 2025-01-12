@@ -1,3 +1,10 @@
 .welcome {
   text-align: center;
 }
+
+section {
+  width: calc(100% / 3);
+  margin: 15px;
+  padding: 15px;
+  border: 3px solid #3f51b5;
+}

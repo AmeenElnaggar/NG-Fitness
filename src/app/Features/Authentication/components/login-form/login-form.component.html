@@ -37,16 +37,16 @@
   </mat-form-field>
 
   <!-- Submit Button -->
-  @if (!isLoading()) {
+  @if (!(isLoading$ | async )) {
   <button
     type="submit"
     mat-raised-button
-    color="primary"
+    color="accent"
     [disabled]="myForm.invalid"
   >
     Submit
   </button>
   }@else {
-  <mat-spinner></mat-spinner>
+  <mat-spinner color="accent"></mat-spinner>
   }
 </form>

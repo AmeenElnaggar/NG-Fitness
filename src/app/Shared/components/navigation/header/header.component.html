@@ -8,10 +8,10 @@
 
   <div fxFlex fxLayout fxLayoutAlign="flex-end" fxHide.xs>
     <ul fxLayout fxLayoutGap="10px" class="navLinks">
-      @if (!isAuth) {
+      @if (!(isAuth$ | async)) {
       <li><a [routerLink]="['signup']">Signup</a></li>
       <li><a [routerLink]="['login']">Login</a></li>
-      } @if (isAuth) {
+      } @if (isAuth$ | async) {
       <li><a [routerLink]="['training']">Training</a></li>
       <li><a [routerLink]="'/'" (click)="onLogout()">Logout</a></li>
       }

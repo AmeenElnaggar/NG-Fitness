@@ -1,26 +1,29 @@
-import { Component, effect, inject, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { AsyncPipe } from '@angular/common';
+
+import { MaterialModule } from '../../../../Core/modules/material.module';
+
 import { AuthService } from '../../../../Shared/Services/auth.service';
 import { ValidationService } from '../../services/validation.service';
-import { UiService } from '../../../../Shared/Services/ui.service';
-import { MaterialModule } from '../../../../Core/modules/material.module';
+
+import { Store } from '@ngrx/store';
+import { StoreInterface } from '../../../../Store/store';
+import { Observable } from 'rxjs';
+import { uiSelector } from '../../../../Store/selectors/ui.selector';
 
 @Component({
   selector: 'app-login-form',
-  imports: [MaterialModule],
+  imports: [MaterialModule, AsyncPipe],
   templateUrl: './login-form.component.html',
   styleUrl: './login-form.component.css',
 })
 export class LoginFormComponent {
   private authService = inject(AuthService);
   private validationService = inject(ValidationService);
-  private uiService = inject(UiService);
+  private store = inject(Store<StoreInterface>);
 
-  isLoading = signal<boolean>(false);
-
-  constructor() {
-    effect(() => this.isLoading.set(this.uiService.loadingStateChanged()));
-  }
+  isLoading$: Observable<boolean> = this.store.select(uiSelector);
 
   myForm = new FormGroup({
     email: new FormControl('', {

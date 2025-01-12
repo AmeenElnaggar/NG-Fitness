@@ -1,5 +1,6 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+
 import { NavbarComponent } from './Shared/pages/navbar/navbar.component';
 import { AuthService } from './Shared/Services/auth.service';
 

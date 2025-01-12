@@ -1,23 +1,29 @@
-import { Component, effect, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { AsyncPipe } from '@angular/common';
+
+import { MaterialModule } from '../../../../Core/modules/material.module';
+
 import { AuthService } from '../../../../Shared/Services/auth.service';
 import { ValidationService } from '../../services/validation.service';
-import { UiService } from '../../../../Shared/Services/ui.service';
-import { MaterialModule } from '../../../../Core/modules/material.module';
+
+import { Store } from '@ngrx/store';
+import { StoreInterface } from '../../../../Store/store';
+import { uiSelector } from '../../../../Store/selectors/ui.selector';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-signup-form',
-  imports: [MaterialModule],
+  imports: [MaterialModule, AsyncPipe],
   templateUrl: './signup-form.component.html',
   styleUrl: './signup-form.component.css',
 })
 export class SignupFormComponent implements OnInit {
   private authService = inject(AuthService);
   private validationService = inject(ValidationService);
+  private store = inject(Store<StoreInterface>);
 
-  private uiService = inject(UiService);
-
-  isLoading = signal<boolean>(false);
+  isLoading$: Observable<boolean> = this.store.select(uiSelector);
 
   myForm = new FormGroup({
     email: new FormControl('', {
@@ -37,10 +43,6 @@ export class SignupFormComponent implements OnInit {
     }),
   });
   maxDate = signal<any>(0);
-
-  constructor() {
-    effect(() => this.isLoading.set(this.uiService.loadingStateChanged()));
-  }
 
   ngOnInit(): void {
     const currentDate = new Date();

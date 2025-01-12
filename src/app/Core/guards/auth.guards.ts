@@ -8,5 +8,6 @@ export const authGuard: CanMatchFn = (route, segments) => {
   if (authService.isAuth()) {
     return true;
   }
+
   return new RedirectCommand(router.parseUrl('/login'));
 };

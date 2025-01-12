@@ -1,5 +1,4 @@
-import { inject, Injectable, signal } from '@angular/core';
-import { AuthData } from '../../Features/Authentication/models/authData.model';
+import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import {
   Auth,
@@ -8,8 +7,19 @@ import {
   signOut,
   onAuthStateChanged,
 } from '@angular/fire/auth';
+
+import { AuthData } from '../../Features/Authentication/models/authData.model';
 import { TrainingService } from '../../Features/Training/services/training.service';
 import { UiService } from './ui.service';
+
+import { Store } from '@ngrx/store';
+import { StoreInterface } from '../../Store/store';
+import { startLoading, stopLoading } from '../../Store/actions/ui.actions';
+import {
+  setAuthenticated,
+  setUnAuthenticated,
+} from '../../Store/actions/auth.action';
+import { authSelector } from '../../Store/selectors/auth.selector';
 
 @Injectable({
   providedIn: 'root',
@@ -17,51 +27,47 @@ import { UiService } from './ui.service';
 export class AuthService {
   private router = inject(Router);
   private afauth = inject(Auth);
-  private isAuthenticated = signal<boolean>(false);
   private trainingService = inject(TrainingService);
   private uiService = inject(UiService);
-
-  authChange = signal<boolean>(false);
+  private store = inject(Store<StoreInterface>);
 
   initAuthListener() {
     onAuthStateChanged(this.afauth, (user) => {
       if (user) {
-        this.isAuthenticated.set(true);
-        this.authChange.set(true);
+        this.store.dispatch(setAuthenticated());
         this.router.navigate(['/training']);
       } else {
         this.trainingService.cancelFetchingDataFromDatabase();
-        this.authChange.set(false);
-        this.isAuthenticated.set(false);
+        this.store.dispatch(setUnAuthenticated());
         this.router.navigate(['/login']);
       }
     });
   }
 
   registerUser(authData: AuthData) {
-    this.uiService.loadingStateChanged.set(true);
+    this.store.dispatch(startLoading());
     createUserWithEmailAndPassword(
       this.afauth,
       authData.email,
       authData.password
     )
       .then((result) => {
-        this.uiService.loadingStateChanged.set(false);
+        this.store.dispatch(stopLoading());
       })
       .catch((error: Error) => {
-        this.uiService.loadingStateChanged.set(false);
+        this.store.dispatch(stopLoading());
         this.uiService.showSnackbar(error.message, 3000);
       });
   }
 
   login(authData: AuthData) {
-    this.uiService.loadingStateChanged.set(true);
+    this.store.dispatch(startLoading());
     signInWithEmailAndPassword(this.afauth, authData.email, authData.password)
       .then((result) => {
-        this.uiService.loadingStateChanged.set(false);
+        this.store.dispatch(stopLoading());
       })
       .catch((error: Error) => {
-        this.uiService.loadingStateChanged.set(false);
+        this.store.dispatch(stopLoading());
         this.uiService.showSnackbar(error.message, 3000);
       });
   }
@@ -71,6 +77,10 @@ export class AuthService {
   }
 
   isAuth() {
-    return this.isAuthenticated();
+    let isAuth: boolean = false;
+    this.store.select(authSelector).subscribe((res) => {
+      isAuth = res;
+    });
+    return isAuth;
   }
 }

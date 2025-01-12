@@ -1,29 +1,32 @@
-import { Component, effect, inject, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { AsyncPipe } from '@angular/common';
+
+import { MaterialModule } from '../../../../Core/modules/material.module';
+
 import { TrainingService } from '../../services/training.service';
 import { Exercise } from '../../models/exercise.model';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { UiService } from '../../../../Shared/Services/ui.service';
-import { MaterialModule } from '../../../../Core/modules/material.module';
+
+import { Store } from '@ngrx/store';
+import { StoreInterface } from '../../../../Store/store';
+import { uiSelector } from '../../../../Store/selectors/ui.selector';
+import { avaliableTrainingsSelector } from '../../../../Store/selectors/training.selectors';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-new-training',
-  imports: [MaterialModule],
+  imports: [MaterialModule, AsyncPipe],
   templateUrl: './new-training.component.html',
   styleUrl: './new-training.component.css',
 })
 export class NewTrainingComponent {
   private trainingService = inject(TrainingService);
-  private uiService = inject(UiService);
-  exercises = signal<Exercise[] | null>(null);
+  private store = inject(Store<StoreInterface>);
+  exercises$: Observable<Exercise[]> = this.store.select(
+    avaliableTrainingsSelector
+  );
 
-  isLoading = signal<boolean>(false);
-
-  constructor() {
-    effect(() => {
-      this.isLoading.set(this.uiService.loadingStateChanged());
-      this.exercises.set(this.trainingService.exercisesChanged());
-    });
-  }
+  isLoading$: Observable<boolean> = this.store.select(uiSelector);
 
   ngOnInit() {
     this.fetchExercises();

@@ -1,5 +1,5 @@
 <mat-nav-list>
-  @if (!isAuth) {
+  @if (!(isAuth$ | async)) {
 
   <a (click)="onClose()" mat-list-item [routerLink]="['signup']">
     <div class="linkItems" fxLayout>
@@ -14,7 +14,7 @@
       <span class="navCaption">Login</span>
     </div>
   </a>
-  } @if (isAuth) {
+  } @if (isAuth$ | async) {
 
   <a (click)="onClose()" mat-list-item [routerLink]="['training']">
     <div class="linkItems" fxLayout>

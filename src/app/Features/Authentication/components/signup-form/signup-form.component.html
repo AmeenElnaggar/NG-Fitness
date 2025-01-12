@@ -51,22 +51,22 @@
     </mat-form-field>
 
     <!-- Checkbox Input -->
-    <mat-checkbox formControlName="checkbox" required="agree" color="primary"
-      >Agree to Terms and Conditions</mat-checkbox
+    <mat-checkbox formControlName="checkbox" required="agree" color="accent"
+      ><span>Agree to Terms and Conditions</span></mat-checkbox
     >
 
     <!-- Submit Button  -->
-    @if (!isLoading()) {
+    @if (!(isLoading$|async)) {
     <button
       type="submit"
       mat-raised-button
-      color="primary"
+      color="accent"
       [disabled]="myForm.invalid"
     >
       Submit
     </button>
     }@else {
-    <mat-spinner></mat-spinner>
+    <mat-spinner color="accent"></mat-spinner>
     }
   </form>
 </section>

@@ -6,24 +6,24 @@
       </mat-card-title>
 
       <mat-card-content fxLayoutAlign="center" class="cardItem">
-        @if (!isLoading() && exercises()) {
+        @if (!(isLoading$ | async) && (exercises$ | async)) {
         <mat-form-field>
           <mat-label>Choose Exercise</mat-label>
           <mat-select formControlName="exercise">
-            @for (exercise of exercises(); track exercise.id ) {
+            @for (exercise of (exercises$ | async); track exercise.id ) {
             <mat-option #trainingValue [value]="exercise.id">{{
               exercise.name
             }}</mat-option>
             }
           </mat-select>
         </mat-form-field>
-        } @if (isLoading()) {
+        } @if ((isLoading$ | async)) {
         <mat-spinner></mat-spinner>
         }
       </mat-card-content>
 
       <mat-card-actions fxLayoutAlign="center" class="cardItem">
-        @if (!isLoading() &&exercises()) {
+        @if (!(isLoading$ | async) &&(exercises$ | async)) {
         <button
           color="accent"
           type="submit"
@@ -32,7 +32,7 @@
         >
           Start
         </button>
-        } @if (!exercises()) {
+        } @if (!(exercises$ | async)) {
         <button
           color="accent"
           type="button"

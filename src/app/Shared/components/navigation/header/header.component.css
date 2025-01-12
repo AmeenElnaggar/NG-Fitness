@@ -8,12 +8,13 @@ a:active {
   color: lightgray;
 }
 
-.navLinks {
-  list-style: none;
+a:link,
+a:visited {
+  color: white;
 }
 
-.navLinks li a {
-  color: white;
+.navLinks {
+  list-style: none;
 }
 
 .navCaption {

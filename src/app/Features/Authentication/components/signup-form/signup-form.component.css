@@ -1,3 +1,17 @@
 mat-form-field {
   width: 300px;
+  color: white;
+}
+form {
+  width: 90%;
+  max-width: 40rem;
+  margin: 3rem auto;
+  padding: 2rem;
+  background: linear-gradient(180deg, #3f51b5, #3f51b5);
+  border-radius: 8px;
+  box-shadow: 0 0 16px 1px rgba(0, 0, 0, 0.5);
+}
+
+mat-checkbox span {
+  color: white;
 }
