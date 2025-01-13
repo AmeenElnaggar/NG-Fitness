@@ -16,6 +16,7 @@ import { Observable } from 'rxjs';
 @Component({
   selector: 'app-new-training',
   imports: [MaterialModule, AsyncPipe],
+  standalone: true,
   templateUrl: './new-training.component.html',
   styleUrl: './new-training.component.css',
 })

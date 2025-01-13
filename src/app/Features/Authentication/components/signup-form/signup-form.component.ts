@@ -15,6 +15,8 @@ import { Observable } from 'rxjs';
 @Component({
   selector: 'app-signup-form',
   imports: [MaterialModule, AsyncPipe],
+  standalone: true,
+
   templateUrl: './signup-form.component.html',
   styleUrl: './signup-form.component.css',
 })

@@ -25,6 +25,7 @@ import { finishedTrainingsSelector } from '../../../../Store/selectors/training.
 @Component({
   selector: 'app-past-training',
   imports: [FormsModule, DatePipe, DecimalPipe, MaterialModule],
+  standalone: true,
   templateUrl: './past-training.component.html',
   styleUrl: './past-training.component.css',
 })

@@ -22,6 +22,7 @@ import { Observable } from 'rxjs';
     CurrentTrainingComponent,
     AsyncPipe,
   ],
+  standalone: true,
   templateUrl: './training.component.html',
   styleUrl: './training.component.css',
 })

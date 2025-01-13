@@ -6,6 +6,7 @@ import { MaterialModule } from '../../../../Core/modules/material.module';
 @Component({
   selector: 'app-stop-training',
   imports: [MaterialModule],
+  standalone: true,
   templateUrl: './stop-training.component.html',
   styleUrl: './stop-training.component.css',
 })

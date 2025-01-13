@@ -14,6 +14,7 @@ import { Observable } from 'rxjs';
 @Component({
   selector: 'app-header',
   imports: [MaterialModule, RouterLink, AsyncPipe],
+  standalone: true,
   templateUrl: './header.component.html',
   styleUrl: './header.component.css',
 })

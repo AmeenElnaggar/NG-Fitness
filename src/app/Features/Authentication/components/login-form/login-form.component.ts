@@ -15,6 +15,8 @@ import { uiSelector } from '../../../../Store/selectors/ui.selector';
 @Component({
   selector: 'app-login-form',
   imports: [MaterialModule, AsyncPipe],
+  standalone: true,
+
   templateUrl: './login-form.component.html',
   styleUrl: './login-form.component.css',
 })

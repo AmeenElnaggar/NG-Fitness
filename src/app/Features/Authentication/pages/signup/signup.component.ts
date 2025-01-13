@@ -6,6 +6,8 @@ import { SignupFormComponent } from '../../components/signup-form/signup-form.co
   selector: 'app-signup',
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.css',
+  standalone: true,
+
   imports: [SignupFormComponent],
 })
 export class SignupComponent {}

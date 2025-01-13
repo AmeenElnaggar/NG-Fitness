@@ -14,6 +14,7 @@ import { take } from 'rxjs';
 @Component({
   selector: 'app-current-training',
   imports: [MaterialModule, StopTrainingComponent],
+  standalone: true,
   templateUrl: './current-training.component.html',
   styleUrl: './current-training.component.css',
 })

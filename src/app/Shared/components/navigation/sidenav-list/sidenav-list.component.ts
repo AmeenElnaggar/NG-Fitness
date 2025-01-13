@@ -14,6 +14,7 @@ import { Observable } from 'rxjs';
 @Component({
   selector: 'app-sidenav-list',
   imports: [MaterialModule, RouterLink, AsyncPipe],
+  standalone: true,
   templateUrl: './sidenav-list.component.html',
   styleUrl: './sidenav-list.component.css',
 })

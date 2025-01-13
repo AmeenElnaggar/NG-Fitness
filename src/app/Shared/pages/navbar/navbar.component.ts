@@ -8,6 +8,7 @@ import { SidenavListComponent } from '../../components/navigation/sidenav-list/s
 @Component({
   selector: 'app-navbar',
   imports: [MaterialModule, HeaderComponent, SidenavListComponent],
+  standalone: true,
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css',
 })
